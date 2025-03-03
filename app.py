@@ -3,7 +3,7 @@ from plagiarism import check_plagiarism  # Import function from plagiarism.py
 import os
 
 app = Flask(__name__)
-app = Flask(__name__)
+
 
 @app.route('/')
 def home():
