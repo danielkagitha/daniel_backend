@@ -3,6 +3,16 @@ from plagiarism import check_plagiarism  # Import function from plagiarism.py
 import os
 
 app = Flask(__name__)
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return "Plagiarism Checker is running!"
+
+if __name__ == '__main__':
+    port = int(os.environ.get("PORT", 5000))  # Get port from environment variable
+    app.run(host='0.0.0.0', port=port, debug=False)
+
 UPLOAD_FOLDER = "uploads"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
