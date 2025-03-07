@@ -4,6 +4,7 @@ from sentence_transformers import SentenceTransformer, util
 import docx
 from collections import Counter
 import re
+import os
 
 # Load SBERT Model for semantic similarity
 model = SentenceTransformer('all-MiniLM-L6-v2')
@@ -48,7 +49,7 @@ def check_plagiarism(file_path):
     # Extract text from Word document
     document_text = extract_text_from_docx(file_path)
     
-    # Extract keywords dynamically
+    # Extract keywords dynamically from document content
     search_query = " ".join(extract_keywords(document_text))
     print(f"Using search query: {search_query}")  # Debugging
     
@@ -75,11 +76,3 @@ def check_plagiarism(file_path):
     results.sort(key=lambda x: x["similarity"], reverse=True)
 
     return results
-
-# Example usage
-file_path = "uploads/klu Research Journal Management System.docx"  # Replace with your document
-plagiarism_results = check_plagiarism(file_path)
-
-print("\n🔍 Plagiarism Check Results:")
-for i, result in enumerate(plagiarism_results):
-    print(f"{i+1}. {result['title']}\n   Similarity: {result['similarity']}%\n   Link: {result['link']}\n")
