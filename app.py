@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, render_template
-from plagiarism import check_plagiarism  # Ensure plagiarism.py exists in the same directory
+from plagiarism import check_plagiarism  # Import function from plagiarism.py
 import os
 
 app = Flask(__name__)
@@ -29,11 +29,8 @@ def upload_file():
     file_path = os.path.join(app.config["UPLOAD_FOLDER"], file.filename)
     file.save(file_path)  # Save file to uploads folder
 
-    # Generate a search query based on filename (assuming words in the filename are useful)
-    search_query = " ".join(file.filename.split())
-
     # Call plagiarism check function
-    results = check_plagiarism(file_path, search_query)
+    results = check_plagiarism(file_path)
 
     return jsonify({"results": results})
 
