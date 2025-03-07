@@ -1,43 +1,42 @@
 from flask import Flask, request, jsonify, render_template
-from plagiarism import check_plagiarism  # Import function from plagiarism.py
+from plagiarism import check_plagiarism  # Ensure plagiarism.py exists in the same directory
 import os
 
 app = Flask(__name__)
 
-
-@app.route('/')
-def home():
-    return "Plagiarism Checker is running!"
-
-if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5000))  # Get port from environment variable
-    app.run(host='0.0.0.0', port=port, debug=False)
-
+# Configure upload folder
 UPLOAD_FOLDER = "uploads"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
-# Route to serve the frontend page
+# Ensure upload directory exists
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+# Home route serving the frontend
 @app.route("/")
 def index():
-    return render_template("index.html")  # Make sure you have an index.html in templates folder
+    return render_template("index.html")  # Ensure index.html exists in the 'templates' folder
 
 # Route to handle file upload and plagiarism check
 @app.route("/upload", methods=["POST"])
 def upload_file():
     if "file" not in request.files:
-        return jsonify({"error": "No file part"})
+        return jsonify({"error": "No file part"}), 400
 
     file = request.files["file"]
     if file.filename == "":
-        return jsonify({"error": "No selected file"})
+        return jsonify({"error": "No selected file"}), 400
 
     file_path = os.path.join(app.config["UPLOAD_FOLDER"], file.filename)
     file.save(file_path)  # Save file to uploads folder
 
-    search_query = " ".join(file.filename.split())  # Generate search query from filename
+    # Generate a search query based on filename (assuming words in the filename are useful)
+    search_query = " ".join(file.filename.split())
+
+    # Call plagiarism check function
     results = check_plagiarism(file_path, search_query)
 
     return jsonify({"results": results})
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))  # Get port from environment variable, default to 5000
+    app.run(host='0.0.0.0', port=port, debug=True)  # Debug mode enabled for development
