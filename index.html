@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plagiarism Checker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<style>
+    body {
+        background-color: #1e1e1e;
+        color: white;
+        font-family: Arial, sans-serif;
+        text-align: center;
+    }
+    
+    .container {
+        margin-top: 50px;
+    }
+    
+    input, button {
+        padding: 10px;
+        margin: 10px;
+        border-radius: 5px;
+    }
+    
+    button {
+        background-color: #6200ea;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+    
+    button:hover {
+        background-color: #3700b3;
+    }
+    
+</style>
+</head>
+<body>
+    <div class="container">
+        <h1>Plagiarism Checker</h1>
+        <input type="file" id="fileInput">
+        <button onclick="uploadFile()">Check Plagiarism</button>
+
+        <div id="results"></div>
+    </div>
+
+    <script>
+        function uploadFile() {
+            let file = document.getElementById("fileInput").files[0];
+            let formData = new FormData();
+            formData.append("file", file);
+
+            fetch("/upload", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                let resultsDiv = document.getElementById("results");
+                resultsDiv.innerHTML = "<h2>Results</h2>";
+                data.results.forEach((result, index) => {
+                    resultsDiv.innerHTML += `<p>${index + 1}. ${result.title} - ${result.similarity}% <a href="${result.link}" target="_blank">[View]</a></p>`;
+                });
+            });
+        }
+    </script>
+</body>
+</html>
