@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify, render_template
 from plagiarism import check_plagiarism  # Import function from plagiarism.py
 import os
 
-
+app = Flask(__name__)
     
 # Configure upload folder
 UPLOAD_FOLDER = "uploads"
