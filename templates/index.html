@@ -17,21 +17,30 @@
     }
     
     input, button {
-        padding: 10px;
-        margin: 10px;
-        border-radius: 5px;
-    }
-    
-    button {
-        background-color: #6200ea;
-        color: white;
-        border: none;
-        cursor: pointer;
-    }
+    padding: 10px;
+    margin: 10px;
+    border-radius: 5px;
+    background-color: white; /* Light background */
+    color: black;
+    border: 1px solid #ccc;
+}
+button {
+    background-color: #6200ea;
+    color: white;
+}
+
     
     button:hover {
         background-color: #3700b3;
     }
+
+    #results {
+    background-color: rgba(255, 255, 255, 0.1); /* Light background */
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
     
 </style>
 </head>
@@ -51,18 +60,24 @@
             formData.append("file", file);
 
             fetch("https://daniel-backend-3.onrender.com/upload", {
-                method: "POST",
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                let resultsDiv = document.getElementById("results");
-                resultsDiv.innerHTML = "<h2>Results</h2>";
-                data.results.forEach((result, index) => {
-                    resultsDiv.innerHTML += `<p>${index + 1}. ${result.title} - ${result.similarity}% <a href="${result.link}" target="_blank">[View]</a></p>`;
-                });
-            });
-        }
+    method: "POST",
+    body: formData
+})
+.then(response => response.json())
+.then(data => {
+    console.log(data); // Debugging line
+    let resultsDiv = document.getElementById("results");
+    resultsDiv.innerHTML = "<h2>Results</h2>";
+    if (data.results && data.results.length > 0) {
+        data.results.forEach((result, index) => {
+            resultsDiv.innerHTML += `<p>${index + 1}. ${result.title} - ${result.similarity}% <a href="${result.link}" target="_blank">[View]</a></p>`;
+        });
+    } else {
+        resultsDiv.innerHTML += "<p>No plagiarism detected.</p>";
+    }
+})
+.catch(error => console.error("Error fetching results:", error));
+
     </script>
 </body>
 </html>
